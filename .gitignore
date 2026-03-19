@@ -1,0 +1,58 @@
+# MATLAB
+*.asv
+*.m~
+*.mex*
+slprj/
+*.slxc
+*.autosave
+
+# Simulink cache and code generation
+*.slxc
+slprj/
+sldemo_househeat_data/
+
+# MATLAB generated files
+codegen/
+*.mlappinstall
+*.mltbx
+
+# Simulation results (large .mat files — regenerate by running scripts)
+simulation/results/*.mat
+
+# LaTeX build artifacts
+thesis/*.aux
+thesis/*.bbl
+thesis/*.bcf
+thesis/*.blg
+thesis/*.fdb_latexmk
+thesis/*.fls
+thesis/*.log
+thesis/*.out
+thesis/*.pdf
+thesis/*.run.xml
+thesis/*.synctex.gz
+thesis/*.toc
+thesis/*.lof
+thesis/*.lot
+thesis/*.nav
+thesis/*.snm
+thesis/*.vrb
+thesis/*.idx
+thesis/*.ilg
+thesis/*.ind
+
+# OS files
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Arduino build
+firmware/**/build/
+firmware/**/.pio/
