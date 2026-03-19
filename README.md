@@ -18,26 +18,34 @@ Three experimental modes are implemented:
 ## Repository Structure
 
 ```
-├── simulation/          # MATLAB/Simulink simulation scripts
-│   ├── exp1/            # Experiment 1 parameter sweep script
-│   ├── exp2/            # Experiment 2 parameter sweep script
-│   ├── exp3_stg1/       # Experiment 3 Stage 1 parameter sweep script
-│   ├── exp3_stg2/       # Experiment 3 Stage 2 parameter sweep script
-│   ├── models/          # Simulink model files (.slx)
-│   └── results/         # Saved sweep results and figures
-├── firmware/            # Embedded software (Arduino/ATmega328P)
-│   ├── master/          # Master module firmware
-│   ├── slave/           # Slave module firmware
-│   └── shared/          # Shared libraries and headers
-├── cad/                 # Mechanical design files
-│   ├── hapkit_base/     # Modified Hapkit base and board mount
-│   ├── control_module/  # Control module enclosure
-│   └── assembly/        # Full assembly files
-├── thesis/              # LaTeX source of the thesis
-│   ├── chapters/        # Chapter .tex files
-│   ├── images/          # Figures used in the thesis
-│   └── appendices/      # Appendix .tex files
-└── docs/                # Additional documentation
+├── firmware/                        # Embedded software (ATmega328P)
+│   ├── main_master/                 # Master module firmware
+│   │   └── main_master.ino
+│   └── main_slave/                  # Slave module firmware
+│       └── main_slave.ino
+├── Simulation/                      # MATLAB/Simulink simulation
+│   ├── Experiment 1/                # Local virtual environment
+│   │   ├── exp1_local_rendering_stg1.slx
+│   │   ├── exp1_local_rendering_stg2.slx
+│   │   └── exp1_sweep_final.m
+│   ├── Experiment 2/                # Instant bilateral teleoperation
+│   │   ├── exp2_bilateral_nodelay_stg1.slx
+│   │   ├── exp2_bilateral_nodelay_stg2.slx
+│   │   └── exp2_sweep_final.m
+│   ├── Experiment 3/                # Delayed bilateral teleoperation
+│   │   ├── exp3_bilateral_delay_stg1.slx
+│   │   ├── exp3_bilateral_delay_stg2.slx
+│   │   ├── sweep_exp3_KB_Td_stg1_clean.m
+│   │   └── sweep_exp3_KB_Td_stg2_clean.m
+│   └── Validation/                  # Hardware validation scripts
+│       └── Experiment 1/
+│           ├── exp1_validation/
+│           │   └── exp1_validation.ino
+│           ├── plot_exp1.py
+│           └── record.py
+├── CITATION.cff
+├── LICENSE
+└── README.md
 ```
 
 ## Hardware Requirements
@@ -54,32 +62,43 @@ Three experimental modes are implemented:
 ### Simulation
 - MATLAB R2023b or later
 - Simulink
-- Parallel Computing Toolbox (for Experiment 3 sweeps)
+- Parallel Computing Toolbox (required for Experiment 3 sweeps)
 
 ### Firmware
 - Arduino IDE or PlatformIO
 - ATmega328P toolchain
 
+### Validation
+- Python 3 with `pyserial` and `matplotlib` (for hardware data recording and plotting)
+
 ## Getting Started
 
 ### Running the simulations
 
-1. Open MATLAB and navigate to the `simulation/` folder.
-2. Open the desired Simulink model from `simulation/models/`.
-3. Run the corresponding sweep script, e.g.:
+1. Open MATLAB and navigate to the desired experiment folder inside `Simulation/`.
+2. Open the corresponding Simulink model (Stage 1 or Stage 2).
+3. Run the sweep script from MATLAB, e.g.:
    ```matlab
-   run('simulation/exp1/exp1_sweep_final.m')
+   cd('Simulation/Experiment 1')
+   run('exp1_sweep_final.m')
    ```
-4. Results are saved to `simulation/results/` and figures are generated automatically.
+4. Figures and results are saved automatically in the script directory.
 
-> **Note:** Experiment 3 sweeps can take several hours. See the thesis appendix for timing estimates and configuration details.
+> **Note:** Experiment 3 sweeps use parallel workers and can take several hours. Adjust `cfg.nWorkers` in the script to match your machine. See the thesis appendix for timing estimates and full configuration details.
 
 ### Flashing the firmware
 
-1. Connect the Hapkit board via USB.
-2. Open the master or slave firmware project.
-3. Compile and upload using Arduino IDE or PlatformIO.
-4. Connect the control module to the master via DB15.
+1. Connect the master Hapkit board via USB.
+2. Open `firmware/main_master/main_master.ino` in Arduino IDE.
+3. Compile and upload.
+4. Repeat with `firmware/main_slave/main_slave.ino` for the slave board.
+5. Connect the control module to the master via DB15 and power both modules.
+
+### Hardware validation (Experiment 1)
+
+1. Flash `Simulation/Validation/Experiment 1/exp1_validation/exp1_validation.ino` to the master board.
+2. Run `record.py` to capture serial data during a release-response test.
+3. Run `plot_exp1.py` to generate the hardware vs. simulation comparison plots.
 
 ## Simulation Overview
 
@@ -89,8 +108,12 @@ The simulation framework uses automated parameter-space sweeps to classify the s
 |---|---|---|---|
 | Experiment 1 | K, B | 150 × 150 | 3 s |
 | Experiment 2 | K, B | 50 × 50 | 6 s |
-| Experiment 3 Stg 1 | K, B, Td | 50 × 50 × 5 | 12 s |
-| Experiment 3 Stg 2 | K, B, Td | 50 × 50 × 5 | 6 s |
+| Experiment 3 Stage 1 | K, B, Td | 50 × 50 × 5 | 12 s |
+| Experiment 3 Stage 2 | K, B, Td | 50 × 50 × 5 | 6 s |
+
+Each experiment includes two model stages:
+- **Stage 1:** Nominal continuous-time controller with linearized plant (baseline).
+- **Stage 2:** Sampled-data controller realization matching the implemented 1 kHz digital control loop.
 
 ## Citation
 
@@ -104,7 +127,7 @@ If you use this work, please cite:
   institution = {Technical University of Applied Sciences W{\"u}rzburg-Schweinfurt},
   year        = {2026},
   month       = {3},
-  url         = {https://github.com/ekaitzuria/haptic-telemanipulation-lab}
+  url         = {https://github.com/Ekaitzu/haptic-telemanipulation-lab}
 }
 ```
 
