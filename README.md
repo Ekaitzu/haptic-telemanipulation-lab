@@ -115,6 +115,13 @@ Each experiment includes two model stages:
 - **Stage 1:** Nominal continuous-time controller with linearized plant (baseline).
 - **Stage 2:** Sampled-data controller realization matching the implemented 1 kHz digital control loop.
 
+## CAD Files
+
+The mechanical parts were designed in Onshape and are publicly accessible:
+
+- [Modified Hapkit Base and Board Mount](https://cad.onshape.com/documents/c8fc6e6196f04e75e543bbd4/w/1d80618b4131a3cad4d1418a/e/6caf85e75e85b5af1110aae1?renderMode=0&uiState=69bc2a7469daf43287e62295)
+- [Control Module Enclosure](https://cad.onshape.com/documents/8d4e7897996822ba89b4aaa7/w/1423f98d0d7cbf0eb18f9043/e/56cc62e6e25019a27bdcc36d)
+
 ## Citation
 
 If you use this work, please cite:
